@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DREAMERS FILE SEARCH</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
+    * { font-family: 'Special Elite', monospace !important; box-sizing: border-box; }
+  body { background: #fff; color: #000; padding: 20px; max-width: 900px; margin: auto; }
+  h1 { background: #000; color: #fff; padding: 15px 20px; display: inline-block; transform: rotate(-1deg); }
+  .box { border: 3px solid #000; padding: 15px; margin: 15px 0; box-shadow: 6px 6px 0 #000; background: #fff; }
+  #search { width: 100%; padding: 15px; border: 3px solid #000; font-size: 18px; outline: none; }
+  #search:focus { box-shadow: 4px 4px 0 #000; }
+  #upload { display: none; }
+  .upload-btn { background: #000; color: #fff; padding: 12px 20px; cursor: pointer; display: inline-block; font-weight: bold; border: 3px solid #000; }
+  .upload-btn:hover { background: #fff; color: #000; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
+  .file-card { border: 3px solid #000; padding: 10px; background: #fff; word-break: break-all; }
+  .file-card img { width: 100%; height: 150px; object-fit: cover; border: 2px solid #000; }
+  .file-card .name { font-weight: bold; margin-top: 8px; }
+  .file-card .type { font-size: 12px; background: #000; color: #fff; padding: 2px 6px; display: inline-block; }
+  .delete { background: #fff; color: #000; border: 2px solid #000; padding: 4px 8px; cursor: pointer; margin-top: 8px; width: 100%; font-weight: bold; }
+  .delete:hover { background: #000; color: #fff; }
+  .empty { text-align: center; padding: 40px; border: 3px dashed #000; margin-top: 20px; }
+</style>
+</head>
+<body>
+
+<h1>DREAMERS FILES</h1>
+
+<div class="box">
+  <input type="text" id="search" placeholder="SEARCH FILE DITO BOSS... ex: kuromi, picture, rasta">
+</div>
+
+<div class="box">
+  <label for="upload" class="upload-btn">+ MAG LAGAY NG FILE / PICTURE</label>
+  <input type="file" id="upload" multiple accept="image/*,.pdf,.mp4,.mp3,.txt,.doc,.zip">
+  <span id="count" style="margin-left: 10px;">0 FILES</span>
+</div>
+
+<div id="files" class="grid"></div>
+<div id="empty" class="empty">WALA PANG FILE BOSS. MAG UPLOAD KA MUNA.</div>
+
+<script>
+let files = JSON.parse(localStorage.getItem('dreamers_files') || '[]');
+
+const searchInput = document.getElementById('search');
+const uploadInput = document.getElementById('upload');
+const filesDiv = document.getElementById('files');
+const emptyDiv = document.getElementById('empty');
+const countSpan = document.getElementById('count');
+
+function save() {
+  localStorage.setItem('dreamers_files', JSON.stringify(files));
+}
+
+function render(filter = '') {
+  filesDiv.innerHTML = '';
+  const filtered = files.filter(f => f.name.toLowerCase().includes(filter.toLowerCase()));
+  
+  countSpan.textContent = `${files.length} FILES | ${filtered.length} NAKITA`;
+  
+  if (filtered.length === 0) {
+    emptyDiv.style.display = 'block';
+    emptyDiv.textContent = filter ? `WALANG
